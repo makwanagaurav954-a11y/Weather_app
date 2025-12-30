@@ -74,8 +74,9 @@ async function displayWeatherInfo(data, aqiInfo){
           main: {temp, humidity},
           weather: [{description, id}],} = data;
 
-    const{data: {aqi}} = aqiInfo;
-    console.log(aqi);
+    const{data: {aqi}, status} = aqiInfo;
+    console.log(aqiInfo);
+
 
           try{
         // const aqiUrl = `https://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${apiKey}`;
@@ -85,16 +86,14 @@ async function displayWeatherInfo(data, aqiInfo){
         // const components = aqiData.list[0].components;
         // console.log(components.pm2_5, components.pm10);
 
-        //  aqi = aqiData.list[0].main.aqi;
-
-       
-
-    
+        //  aqi = aqiData.list[0].main.aqi;    
           }
           catch(e){console.log(e);}
     
         card.textContent = " ";
         card.style.display = "flex";
+
+
         
         const cityDisplay = document.createElement("h1");
         const aqiDisplay = document.createElement("p");
@@ -104,14 +103,12 @@ async function displayWeatherInfo(data, aqiInfo){
         const weatherEmoji = document.createElement("p");
 
         cityDisplay.textContent = city;
-        aqiDisplay.textContent = ` AQI ${aqi}`;
         tempDisplay.textContent = `${(temp-273.15).toFixed(1)}\u00B0C`;
         humidityDisplay.textContent = `Humidity: ${humidity}%`;
         descDisplay.textContent = description;
         weatherEmoji.textContent = getWeatherEmoji(id);
 
         cityDisplay.classList.add("cityDisplay");
-        aqiDisplay.classList.add("aqiDisplay");
         tempDisplay.classList.add("tempDisplay");
         humidityDisplay.classList.add("humidityDisplay");
         descDisplay.classList.add("descDisplay");
@@ -119,12 +116,29 @@ async function displayWeatherInfo(data, aqiInfo){
 
 
         card.appendChild(cityDisplay);
-        card.appendChild(aqiDisplay);
         card.appendChild(tempDisplay);
         card.appendChild(humidityDisplay);
         card.appendChild(descDisplay);
         card.appendChild(weatherEmoji);
         
+    if(aqi=== "-" || aqi === null || aqi === undefined){
+
+        aqiDisplay.textContent = "AQI is not available for this city";
+
+        aqiDisplay.classList.add("aqiDisplay");
+
+        card.insertBefore(aqiDisplay, tempDisplay);
+    }
+
+    else{
+
+        aqiDisplay.textContent = `AQI ${aqi}`;
+
+        aqiDisplay.classList.add("aqiDisplay");
+
+        card.insertBefore(aqiDisplay, tempDisplay);
+
+    }
 
 }
 
